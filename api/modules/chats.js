@@ -11,6 +11,83 @@ module.exports = {
     init(app){
 
        const router = express.Router()
+
+       router.post("/fetchGroup", auth, async function(request,result){
+        const user = request.user
+         const _id = request.fields._id
+
+         if(!_id){
+           result.json({
+            status:"error",
+            message:"Please fill all fields."
+           }) 
+           return
+         }
+
+         const group =  await db.collection("groups").findOne({
+            _id:ObjectId(_id)
+          })
+   
+          if(group == null){
+            result.json({
+               status:"error",
+               message:"Group not found."
+            })
+            return 
+          }  
+          
+         const messages = await db.collection("groupMessages").find({
+          "group._id":group._id
+          }).sort({
+            createdAt:-1
+          }).toArray()
+
+          const data = []
+          for(let a=0;a<messages.length;a++){
+
+             let message = messages[a].message
+             message = crypto.AES.decrypt(message,key)
+             message = message.toString(crypto.enc.Utf8)
+
+             const messageObj = {
+                _id:messages[a]._id,
+                message:message,
+                sender:messages[a].sender,
+                receiver:messages[a].receiver,
+                attachment:messages[a].attachment || "",
+                extension:messages[a].extension || "",
+                attachmentName:(new Date().getTime()) + "." +
+                      messages[a].extension,
+                createdAt:messages[a].createdAt
+             }
+
+             if(messageObj.attachment != ""){
+               messageObj.attachment = apiUrl + "/" + messageObj.attachment
+               
+             }
+             data.push(messageObj)
+          }
+          
+          data.reverse()
+
+          await db.collection("users").findOneAndUpdate({
+            $and: [{
+              _id:user._id
+            },{
+              "groups._id":group._id
+            }]
+          },{
+            $set: {
+                "groups.$.unread": false
+            }
+          })
+
+          result.json({
+            status:"success",
+            message:"Data has been fetched.",
+            data:data
+          })
+       })
          
        router.post("/fetch",auth,async function(request,result){
          const user = request.user
@@ -95,6 +172,118 @@ module.exports = {
           })
            
        }) 
+
+
+       router.post("/sendInGroup", auth, async function(request,result){
+        const user = request.user
+        const _id= request.fields._id
+        const message = request.fields.message
+        const base64 = request.fields.base64 || ""
+        const originalAttachmentName = request.fields.attachmentName
+        const extension = request.fields.extension
+        if(!_id || !message){
+           result.json({
+            status:"error",
+            message:"Please fill all fields."
+           }) 
+           
+           return 
+        }
+        
+       const encryptedText = crypto.AES.encrypt(message,key).toString();
+       // console.log(encryptedText)
+
+       const group =  await db.collection("groups").findOne({
+         _id:ObjectId(_id)
+       })
+
+       if(group == null){
+         result.json({
+            status:"error",
+            message:"Group not found."
+         })
+         return 
+       }
+          let isAlreadyMember =false
+       for (let a = 0; a < group.members.length; a++) {
+        if (group.members[a].user._id.toString() == user._id.toString() && group.members[a].status == "accepted") {
+            isAlreadyMember = true
+            break
+        }
+    }
+
+    if(!isAlreadyMember && group.createdBy._id.toString() != user._id.toString()){
+       result.json({
+        status:"error",
+        message:"Unauthorized"
+       })
+       return 
+    }
+
+       let attachment = ""
+       let attachmentName = ""
+       
+       if(base64!=""){
+        attachmentName = (new Date().getTime()) + "." + 
+             extension
+             attachment = "uploads/" + attachmentName
+             
+             fileSystem.writeFile(attachment,base64,"base64",
+             function(error){
+                 if(error){
+                  console.log(error)
+                 }
+             })
+            
+       }
+
+
+       const messageObj = {
+         _id:ObjectId(),
+         message:encryptedText,
+         sender:{
+            _id:user._id,
+            name:user.name,
+            phone:user.phone
+         },
+         group:{
+            _id:group._id,
+            name:group.name
+         },
+         attachment:attachment,
+         extension:extension,
+         attachmentName:attachmentName,
+         originalAttachmentName:originalAttachmentName,
+         createdAt:new Date().getTime()
+       }
+
+       await db.collection("groupMessages").insertOne(messageObj)
+       messageObj.message = message
+
+       if(attachmentName != ""){
+          messageObj.attachmentName = apiUrl + "/" + attachment
+       }
+       await db.collection("users").updateMany({
+         $and: [{
+          "groups._id":group._id
+         },{
+          "_id":{
+            $ne:user._id
+          }
+         }]
+       },{
+        $set: {
+          "groups.$.unread":true
+        }
+       })
+
+       result.json({
+         status:"success",
+         message:"Message has been saved.",
+         messageObj:messageObj
+       })
+
+       })
 
 
        router.post("/send",auth,async function(request,result){

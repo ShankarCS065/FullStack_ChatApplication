@@ -65,6 +65,7 @@ const auth = require("./modules/auth")
 
 const contacts = require("./modules/contacts")
 const chats = require("./modules/chats")
+const groups = require("./modules/groups")
 
 const nodemailer = require("nodemailer")
 global.nodemailerFrom = "support@adnan-tech.com"
@@ -78,7 +79,7 @@ global.transport = nodemailer.createTransport({
     }
 })
 
-global.apiUrl = "http://192.168.11.69:3000"
+global.apiUrl = "http://192.168.150.37:3000"
 const port = (process.env.PORT || 3000)
  
 // start the server at port 3000 (for local) or for hosting server port
@@ -98,6 +99,7 @@ http.listen(port, function () {
 
         contacts.init(app)
         chats.init(app)
+        groups.init(app)
 
         app.post("/change-password", auth, async function (request, result) {
             const user = request.user

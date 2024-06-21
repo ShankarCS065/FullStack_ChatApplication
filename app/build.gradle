@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'com.krashkrosh748199.chatapp'
+    namespace 'com.krashkrosh748199.GFolksy'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.krashkrosh748199.chatapp"
+        applicationId 'com.krashkrosh748199.GFolksy'
         minSdk 24
         targetSdk 33
         versionCode 1

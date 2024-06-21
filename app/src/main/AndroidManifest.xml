@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.krashkrosh748199.GFolksy">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -21,19 +21,31 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".ChatActivity"
+            android:name="com.krashkrosh748199.GFolksy.AddGroupMemberActivity"
             android:exported="false" />
         <activity
-            android:name=".HomeActivity"
+            android:name="com.krashkrosh748199.GFolksy.GroupMembersActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name="com.krashkrosh748199.GFolksy.GroupDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".RegisterActivity"
+            android:name="com.krashkrosh748199.GFolksy.CreateGroupActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name="com.krashkrosh748199.GFolksy.ChatActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.krashkrosh748199.GFolksy.HomeActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.krashkrosh748199.GFolksy.LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.krashkrosh748199.GFolksy.RegisterActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.krashkrosh748199.GFolksy.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>

@@ -14,15 +14,17 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
+            app:collapseIcon="@color/black"
+            app:titleTextColor="@color/black"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary" />
+            android:background="@color/teal_200" />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/teal_700"
+            android:background="#9E18B5"
             android:layout_below="@id/toolbar"
             app:tabTextColor="@color/white"/>
 
