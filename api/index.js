@@ -57,8 +57,8 @@ const jwt = require("jsonwebtoken")
 // secret JWT key
 
 global.jwtSecret = "jwtSecret1234567890"
-global.mainURL = "http://localhost:3000"
-global.connectionString = "mongodb://127.0.0.1:27017"
+global.mainURL = process.env.MAIN_URL || "http://localhost:3000"
+global.connectionString = process.env.MONGO_CONNECTION_STRING 
 
 const auth = require("./modules/auth")
 
@@ -79,7 +79,7 @@ global.transport = nodemailer.createTransport({
     }
 })
 
-global.apiUrl = "http://192.168.150.37:3000"
+global.apiUrl = process.env.API_URL
 const port = (process.env.PORT || 3000)
  
 // start the server at port 3000 (for local) or for hosting server port

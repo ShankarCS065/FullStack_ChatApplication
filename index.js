@@ -59,7 +59,7 @@ const jwt = require("jsonwebtoken")
 
 global.jwtSecret = process.env.JWT_SECRET || "jwtSecret1234567890"
 global.mainURL = process.env.MAIN_URL || "http://localhost:3000"
-global.connectionString = process.env.MONGO_CONNECTION_STRING || "mongodb://127.0.0.1:27017"
+global.connectionString = process.env.MONGO_CONNECTION_STRING
 
 const auth = require("./modules/auth")
 
@@ -75,7 +75,7 @@ global.transport = nodemailer.createTransport({
     port: parseInt(process.env.NODEMAILER_PORT) || 465,
     secure: true,
     auth: {
-        user:process.env.NODEMAILER_USER || nodemailerFrom || "",
+        user:process.env.NODEMAILER_USER || nodemailerFrom,
         pass: process.env.NODEMAILER_PASS || ""
     }
 })
