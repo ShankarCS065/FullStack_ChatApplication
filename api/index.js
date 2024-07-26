@@ -1,3 +1,4 @@
+require('dotenv').config();
 // include express framework
 const express = require("express")
 
