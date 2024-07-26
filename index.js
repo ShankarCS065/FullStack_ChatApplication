@@ -2,7 +2,7 @@ require('dotenv').config();
 // include express framework
 const express = require("express")
 
-// create an instance of it
+// create an instance of itg
 const app = express()
  
 // create http server from express instance
